@@ -1,0 +1,9 @@
+pandas
+sklearn
+xgboost
+imblearn
+matplotlib
+scipy
+numpy
+evidently
+pytest
