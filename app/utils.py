@@ -8,6 +8,7 @@ from sklearn.model_selection import train_test_split
 from imblearn.over_sampling import SMOTE
 from sklearn.model_selection import GridSearchCV
 from sklearn.impute import KNNImputer
+from sklearn.model_selection import StratifiedKFold
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
@@ -324,12 +325,12 @@ class Model:
         except Exception as e:
             logging.info(str(e))
 
-    def grid_search(self, params,eval_metric,folds):
+    def grid_search(self, params,eval_metric):
         try:
             grid = GridSearchCV(estimator=self.xgb,
                                  param_grid=params,
                                  scoring=eval_metric,
-                                 cv=folds,
+                                 cv=StratifiedKFold(),
                                  verbose=1)
             grid.fit(self.X_train_sm,self.y_train_sm)
             logging.info('%s %s','Best params are: ', grid.best_params_)
@@ -367,11 +368,11 @@ class Model:
         except Exception as e:
             logging.info(str(e))
     
-    def create_model(self, params, metric, folds, model_id):
+    def create_model(self, params, metric, model_id):
         self.split_data()
         self.oversample_data()
         self.initiate_model()
-        best_params = self.grid_search(params, metric, folds)
+        best_params = self.grid_search(params, metric)
         self.initiate_model(best_params)
         self.fit_predict()
         self.binary_classification_performance()
