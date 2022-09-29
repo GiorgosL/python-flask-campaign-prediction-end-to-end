@@ -20,9 +20,9 @@
 
 6. running main.py will create the model. Evaluation metrics (loss function/training loss curves) will appear at the end
 
-7. if you want to retrain the model with different data switch the retrain_flag of the data_drift_retrain() function found within the main.py to produce the data drift report
+7. if you want to retrain the model with new data switch the retrain_flag of the data_drift_retrain() function found within the main.py to produce the data drift report and help evaluate against the original dataset
 
-8. the model will be saved in the data folder
+8. the model will be saved in the data folder in json format
 
 9. once the model is produced build a Docker image using the Dockerfile
 
