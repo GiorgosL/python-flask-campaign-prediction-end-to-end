@@ -7,16 +7,19 @@
 5. **test_utils.py** - pytests for utils.py
 6. **Dockerfile** - build the Flask app image that hosts the model and distribute it to any system
 7. **requirements.txt** 
+8. **campaign_report.html / mortgage_report.html** - pandas profiling report for the two dataframes
 
 ### HOW TO
 
 1. assignment_notebook contains the initial workings from data to modelling, in notebook format
 
-2. install requirements.txt
+2. check the pandas profilling report for the two dataframes found in the data folder
+
+3. install requirements.txt
 
 4. optionally run the pytests to debug utils.py
 
-5. run the main.py which essentially calls the functionalities within utils.py. Optionally specify custom hyperparameters for the Grid Seach and its evaluation metric
+5. run the main.py which essentially calls the functionalities within utils.py. Optionally specify custom hyperparameters for the Grid Seach, evaluation metrics and the number of top features from feature selection to be return
 
 6. main.py will create the model. Evaluation metrics (loss function/training loss curves) will appear on screen once done
 
