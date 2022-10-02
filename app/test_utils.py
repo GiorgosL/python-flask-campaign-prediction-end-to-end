@@ -1,7 +1,7 @@
 from utils import *
 
-df_campaign = pd.read_csv('data/Campaign.csv')
 df_mortgage = pd.read_csv('data/Mortgage.csv')
+df_campaign = pd.read_csv('data/Campaign.csv')
 
 dl = DataLoader(df_campaign,df_mortgage)
 
