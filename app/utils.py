@@ -365,6 +365,7 @@ class Model:
     def save_model(self,model_id):
         try:
             return self.xgb.save_model('data/'+model_id)
+            logging.info('%s %s %s','Model saved at: ', 'data/',model_ide)
         except Exception as e:
             logging.info(str(e))
     
