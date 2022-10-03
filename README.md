@@ -5,7 +5,7 @@
 3. **main.py** - run the pipeline and produce the model with its evaluation metrics
 4. **app.py** - Flask app that exposes an endpoint to productionise the model
 5. **test_utils.py** - pytests for utils.py
-6. **Dockerfile** - build the Flask app image that hosts the model and distribute it to any system
+6. **Dockerfile** - build the Flask app image that hosts the model and distribute it to any system to run in production
 7. **requirements.txt** 
 8. **campaign_report.html / mortgage_report.html** - pandas profiling report for the two dataframes
 
@@ -16,6 +16,8 @@
 2. check the pandas profilling report for the two dataframes found in the data folder
 
 3. install requirements.txt
+
+4. place the Campaign.csv and Mortgage.csv in the data folder (if not there)
 
 4. optionally run the pytests to debug utils.py
 

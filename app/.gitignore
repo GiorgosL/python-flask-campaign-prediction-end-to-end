@@ -2,4 +2,5 @@
 .pytest_cache
 Production pipeline.ipynb
 __pycache__
-*.jsons
+
+*.json
