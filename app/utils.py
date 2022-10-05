@@ -1,3 +1,10 @@
+"""
+Usage: main.py
+
+Contains all the steps for the end to end modelling pipeline written into clean, reusable modular code.
+All the functions are being kept within a few lines of code for easier debugging and apprehending.
+Contains classes and fucntions to be imported to main.py.
+"""
 import pandas as pd
 import pickle
 from sklearn import preprocessing
