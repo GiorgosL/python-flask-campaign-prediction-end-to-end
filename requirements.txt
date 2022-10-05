@@ -1,11 +1,12 @@
 pandas
+seaborn
+matplotlib
+scipyCurrencyConverter
 sklearn
 xgboost
 imblearn
-matplotlib
-scipy
+pandas-profiling
+shap
 numpy
 evidently
 pytest
-CurrencyConverter
-seaborn
