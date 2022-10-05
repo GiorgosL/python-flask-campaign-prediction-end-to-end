@@ -1,6 +1,8 @@
-### COMPONENTS
+<h1 align="center">Data Science Assignment</h1>
 
-1. **assignment_notebook.ipynb** - initial notebook for data cleaning modeling etc
+## 1. Components 
+
+1. **assignment_notebook.ipynb** - initial notebook for data cleaning, modeling and business insights
 2. **utils.py** - classes and functions for the end to end modeling pipeline
 3. **main.py** - run the pipeline and produce the model with its evaluation metrics
 4. **app.py** - Flask app that exposes an endpoint to productionise the model
@@ -9,26 +11,18 @@
 7. **requirements.txt** 
 8. **campaign_report.html / mortgage_report.html** - pandas profiling report for the two dataframes
 
-### HOW TO
+## 2. How to
 
-1. assignment_notebook contains the initial workings from data to modelling, in notebook format
 
-2. check the pandas profilling report for the two dataframes found in the data folder
+1. Install requirements.txt
+2. Run main.py to create the model.json in data folder. Evaluation metrics (loss function/learning curves) will appear on screen once done.
+3. If retraining the mode with new data enable the retrain_flag of the data_drift_retrain() function in main.py to produce the data drift report against the old data.
+4. A Flask application (app.py) is included to expose the model in a dedicated endpoint.
+5. Once the model is created build the app.py Docker image using the Dockerfile.
+6. Once the Docker image is built, it can be distributed and productionised on any system.
 
-3. install requirements.txt
+## 3. Optional steps
 
-4. place the Campaign.csv and Mortgage.csv in the data folder (if not there)
-
-4. optionally run the pytests to debug utils.py
-
-5. run the main.py which essentially calls the functionalities within utils.py. Optionally specify custom hyperparameters for the Grid Seach, evaluation metrics and the number of top features from feature selection to be return
-
-6. main.py will create the model. Evaluation metrics (loss function/training loss curves) will appear on screen once done
-
-7. if you want to retrain the model with new data switch the retrain_flag of the data_drift_retrain() function found within the main.py to produce the data drift report and help evaluate against the original dataset
-
-8. the model will be saved in the data folder in json format
-
-9. once the model is produced build a Docker image using the Dockerfile
-
-10. a Flask application (app.py) is being included. Once the Docker image is built the model is exposed on a Flask endpoint thus in can run on produdction in any system
+1. Check the pandas profilling report for the two dataframes found in the data folder.
+2. Run the pytests to debug utils.py.
+3. Specify custom hyperparameters and evaluation metrics for the Grid as well as the number of features for feature selection, within main.py.
