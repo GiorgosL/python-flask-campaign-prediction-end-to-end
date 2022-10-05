@@ -7,3 +7,5 @@ scipy
 numpy
 evidently
 pytest
+CurrencyConverter
+seaborn
