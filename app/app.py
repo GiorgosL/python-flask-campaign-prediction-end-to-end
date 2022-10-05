@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import logging
 import xgboost as xgb
 
@@ -7,10 +7,13 @@ logging.basicConfig(level=logging.INFO)
 
 @app.route('/',methods=['POST'])
 def predict():
-    data = request.form['message']
-    my_prediction = model.predict(data)
+	try:
+	    data = request.form['message']
+	    my_prediction = model.predict(data)
+	    return my_prediction
+	except Exception:
+		return jsonify('error')
 
-    return my_prediction
 
 
 if __name__ == '__main__':
