@@ -4,7 +4,7 @@
 
 1. **assignment_notebook.ipynb** - initial notebook for data cleaning, modeling and business insights
 2. **utils.py** - classes and functions for the end to end modeling pipeline
-3. **main.py** - run the pipeline and produce the model with its evaluation metrics
+3. **main.py** - call and run the functionality from utils.py to produce the model and its evaluation components
 4. **app.py** - Flask app that exposes an endpoint to productionise the model
 5. **test_utils.py** - pytests for utils.py
 6. **Dockerfile** - build the Flask app image that hosts the model and distribute it to any system to run in production
