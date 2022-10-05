@@ -1,7 +1,8 @@
 pandas
 seaborn
 matplotlib
-scipyCurrencyConverter
+scipy
+CurrencyConverter
 sklearn
 xgboost
 imblearn
