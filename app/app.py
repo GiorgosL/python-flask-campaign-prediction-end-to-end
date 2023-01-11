@@ -14,11 +14,12 @@ def predict():
 	except Exception:
 		return jsonify('error')
 
-
-
 if __name__ == '__main__':
-	model_xgb = xgb.Booster()
-	model_xgb.load_model("XGB.json")
-	logging.info('Model loaded')
-	logging.info('App starting')
-	app.run()	
+	try:
+		model_xgb = xgb.Booster()
+		model_xgb.load_model("XGB.json")
+		logging.info('Model loaded')
+		logging.info('App starting')
+		app.run()
+	except Exception as e:
+		logging.info(str(e))	

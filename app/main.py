@@ -1,12 +1,19 @@
 from utils import *
+import configparser
+import json
 
-df_campaign = pd.read_csv('data/Campaign.csv')
-df_mortgage = pd.read_csv('data/Mortgage.csv')
+config = configparser.ConfigParser()
+config.read('data/config.ini')
 
-parameters = {'max_depth': range(2,5),
-             'learning_rate':[0.1,0.01],
-             'min_child_weight':[0.5,1.5],
-             'subsample':[0.5,0.6,1]}
+df_campaign = config['data']['campaign']
+df_mortgage = config['data']['mortgage']
+parameters = {'max_depth': json.loads(config.get("hyperparams","max_depth")),
+			'learning_rate':json.loads(config.get("hyperparams","learning_rate")),
+			'min_child_weight':json.loads(config.get("hyperparams","min_child_weight")),
+			'subsample':json.loads(config.get("hyperparams","subsample"))}
+n_folds = config['booting_params']['n_folds']
+cv_metric = config['booting_params']['cv_metric']
+model_name = config['booting_params']['model_name']
 
 
 def main(df_campaign,df_mortgage,params,_nlarg,metric,model_id):
@@ -23,4 +30,4 @@ def main(df_campaign,df_mortgage,params,_nlarg,metric,model_id):
 	m.create_model(parameters,metric,model_id)
 
 if __name__ == "__main__":
-	main(df_campaign,df_mortgage,parameters,5,'f1','XGB.json')
+	main(df_campaign,df_mortgage,parameters,n_folds,cv_metric,model_name)
