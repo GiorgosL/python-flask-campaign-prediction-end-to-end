@@ -1,7 +1,11 @@
 from utils import *
+import configparser
+import json
 
-df_mortgage = pd.read_csv('data/Mortgage.csv')
-df_campaign = pd.read_csv('data/Campaign.csv')
+config = configparser.ConfigParser()
+config.read('data/config.ini')
+df_campaign = config['data']['campaign']
+df_mortgage = config['data']['mortgage']
 
 dl = DataLoader(df_campaign,df_mortgage)
 
