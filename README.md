@@ -13,7 +13,6 @@
 
 ## 2. How to
 
-
 1. Install requirements.txt
 2. Run main.py to create the model.json in data folder. Evaluation metrics (loss function/learning curves) will appear on screen once done.
 3. If retraining the mode with new data enable the retrain_flag of the data_drift_retrain() function in main.py to produce the data drift report against the old data.
@@ -26,3 +25,18 @@
 1. Check the pandas profilling report for the two dataframes found in the data folder.
 2. Run the pytests to debug utils.py.
 3. Specify custom hyperparameters and evaluation metrics for the Grid as well as the number of features for feature selection, within main.py.
+
+
+## 4. Deployment steps
+
+Deployment intended for AWS Fargate in order to take advantage of the fully managed infrastructure.
+
+1. Create ECR repo
+2. Upload the Docker image on the ECR registry
+3. Create and configure a Networking Cluster
+4. Create new Task Definition (e.g. resources used, Docker image etc)
+5. Use Fargate as launcher
+5.1. Add the container and hit create
+6. Run task as Fargate
+7. Configure inbound rules, port and security group
+ 

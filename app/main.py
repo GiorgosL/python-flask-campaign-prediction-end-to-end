@@ -1,9 +1,5 @@
 from utils import *
-import configparser
-import json
 
-config = configparser.ConfigParser()
-config.read('data/config.ini')
 
 df_campaign = config['data']['campaign']
 df_mortgage = config['data']['mortgage']
@@ -30,4 +26,9 @@ def main(df_campaign,df_mortgage,params,_nlarg,metric,model_id):
 	m.create_model(parameters,metric,model_id)
 
 if __name__ == "__main__":
-	main(df_campaign,df_mortgage,parameters,n_folds,cv_metric,model_name)
+	main(df_campaign,
+		df_mortgage,
+		parameters,
+		n_folds,
+		cv_metric,
+		model_name)

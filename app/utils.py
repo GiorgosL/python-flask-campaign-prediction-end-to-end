@@ -26,6 +26,8 @@ from scipy.stats import chi2
 import numpy as np
 import logging
 import warnings
+import configparser
+import json
 from evidently.dashboard import Dashboard
 from evidently.dashboard.tabs import (
     DataDriftTab,
@@ -34,6 +36,9 @@ from evidently.dashboard.tabs import (
 
 warnings.filterwarnings("ignore")
 logging.basicConfig(level=logging.INFO)
+
+config = configparser.ConfigParser()
+config.read('data/config.ini')
 
 class DataLoader:
     def __init__(self,df_camp,df_mort):
@@ -75,20 +80,18 @@ class DataLoader:
     
     def make_bins(self,df):
         try:
-            bins = [16, 29, 39, 49, 59, 69, 79, 99]
-            label_names = ['20s','30s','40s','50s','60s','70s','above 80s']
+            bins = json.loads(config.get("ETL","bins"))
+            label_names = json.loads(config.get("ETL","label_names"))
             df['age_bracket'] = pd.cut(df['age'], bins, labels=label_names)
         except Exception as e:
             logging.info(str(e))
     
     def drop_columns(self):
         try:
-            self.df_camp.drop(['participant_id', 'postcode','company_email',
-                              'name_title','first_name','last_name'],axis=1,inplace=True)
-            self.df_mort.drop(['paye','new_mortgage','dob','birth_year'],axis=1,inplace=True)
-            logging.info('%s %s', 'Number of campaign columns dropped: ', len(['participant_id', 'postcode','company_email',
-                              'name_title','first_name','last_name']))
-            logging.info('%s %s', 'Number of mortgage columns dropped: ', len(['paye','new_mortgage','dob','birth_year']))
+            self.df_camp.drop(json.loads(config.get("ETL","drop_camp")),axis=1,inplace=True)
+            self.df_mort.drop(json.loads(config.get("ETL","drop_mort")),axis=1,inplace=True)
+            logging.info('%s %s', 'Number of campaign columns dropped: ', len(json.loads(config.get("ETL","drop_camp"))))
+            logging.info('%s %s', 'Number of mortgage columns dropped: ', len(json.loads(config.get("ETL","drop_mort"))))
         except Exception as e:
             logging.info(str(e))
     
@@ -112,7 +115,7 @@ class DataLoader:
         try:
             self.df_mort['dob'] = pd.to_datetime(self.df_mort['dob'])
             self.df_mort['birth_year'] = self.df_mort['dob'].dt.year
-            self.df_mort['age'] = 2022 - self.df_mort['birth_year']
+            self.df_mort['age'] = int(config['ETL']['age']) - self.df_mort['birth_year']
             logging.info('Age created')
         except Exception as e:
             logging.info(str(e))
@@ -256,7 +259,8 @@ class OptimizeData:
             
     def feature_importance(self,n_larg):
         try:
-            model = ExtraTreesClassifier(n_estimators = 100, random_state = 42)
+            model = ExtraTreesClassifier(n_estimators = config['ETL']['n_estimators'], 
+                                        random_state = config['ETL']['random_state'])
             model.fit(self.X, self.y)
             feat_importances = pd.Series(model.feature_importances_, index = self.X.columns)
             self.features = feat_importances.nlargest(n_larg).index.tolist()
@@ -311,15 +315,19 @@ class Model:
         try:
             self.X = self.df.drop(['created_account'],axis=1)
             self.y = self.df['created_account']
-            self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X, self.y, test_size=0.3, random_state=43)
-            self.X_train, self.X_val, self.y_train, self.y_val = train_test_split(self.X_train, self.y_train, test_size=0.2, random_state=43)
+            self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X, self.y, 
+                                                                                    test_size=config['ETL']['test_size'], 
+                                                                                    random_state=config['ETL']['random_state'])
+            self.X_train, self.X_val, self.y_train, self.y_val = train_test_split(self.X_train, self.y_train, 
+                                                                                    test_size=config['ETL']['valid_size '], 
+                                                                                    random_state=config['ETL']['random_state'])
             logging.info('Data split to train, test, validation succesfully')
         except Exception as e:
             logging.info(str(e))
     
     def oversample_data(self):
         try:
-            sm = SMOTE(random_state=43)
+            sm = SMOTE(random_state=config['ETL']['random_state'])
             self.X_train_sm, self.y_train_sm = sm.fit_resample(self.X_train, self.y_train)
             logging.info('Data resampled succesfully')
         except Exception as e:
@@ -327,7 +335,7 @@ class Model:
             
     def initiate_model(self,params=None):
         try:
-            self.xgb = XGBClassifier(random_state=43,params=params)
+            self.xgb = XGBClassifier(random_state=config['ETL']['random_state'],params=params)
             logging.info('XGB initiated succesfully')
         except Exception as e:
             logging.info(str(e))
@@ -338,7 +346,7 @@ class Model:
                                  param_grid=params,
                                  scoring=eval_metric,
                                  cv=StratifiedKFold(),
-                                 verbose=1)
+                                 verbose=config['ETL']['verbose'])
             grid.fit(self.X_train_sm,self.y_train_sm)
             logging.info('%s %s','Best params are: ', grid.best_params_)
             return grid.best_params_
