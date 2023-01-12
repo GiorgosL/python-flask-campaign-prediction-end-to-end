@@ -131,12 +131,12 @@ class DataLoader:
     
     def process_salary_band(self):
         try:
-            self.df_mort['salary_band'] = self.df_mort['salary_band'].apply(lambda x: float(x.split()[0].replace('£','')) if 'yearly' in str(x) else x)
-            self.df_mort['salary_band'] = self.df_mort['salary_band'].apply(lambda x: float(x.split()[0].replace('£',''))*12 if 'month' in str(x) else x)
-            self.df_mort['salary_band'] = self.df_mort['salary_band'].apply(lambda x: float(x.split()[0].replace('£',''))*52 if 'pw' in str(x) else x)
-            self.df_mort['salary_band'] = self.df_mort['salary_band'].apply(lambda x: float(x.split()[0].replace('£',''))+float(x.split()[2])/2 if 'range' in str(x) else x)
-            self.df_mort['salary_band'] = self.df_mort['salary_band'].apply(lambda x: 'crypto' if len(str(x))<=5 else x)
-            self.df_mort['salary_band'] = self.df_mort['salary_band'].apply(lambda x: '.'.join(re.findall("\d+", x)) if type(x)==str and len(str(x))>6 else x)
+            self.df_mort['salary_band'] = self.df_mort['salary_band'].apply(lambda x: float(x.split()[0].replace('£','')) if config['ETL']['year_val'] in str(x) else x)
+            self.df_mort['salary_band'] = self.df_mort['salary_band'].apply(lambda x: float(x.split()[0].replace('£',''))*int(config['ETL']['no_months'])if config['ETL']['month_val'] in str(x) else x)
+            self.df_mort['salary_band'] = self.df_mort['salary_band'].apply(lambda x: float(x.split()[0].replace('£',''))*int(config['ETL']['no_weeks']) if config['ETL']['week_val'] in str(x) else x)
+            self.df_mort['salary_band'] = self.df_mort['salary_band'].apply(lambda x: float(x.split()[0].replace('£',''))+float(x.split()[2])/2 if config['ETL']['range_val'] in str(x) else x)
+            self.df_mort['salary_band'] = self.df_mort['salary_band'].apply(lambda x: config['ETL']['crypto'] if len(str(x))<=int(config['ETL']['crypto_len']) else x)
+            self.df_mort['salary_band'] = self.df_mort['salary_band'].apply(lambda x: '.'.join(re.findall("\d+", x)) if type(x)==str and len(str(x))>int(config['ETL']['remove_len']) else x)
             logging.info('Salary bands are normalised')
         except Exception as e:
             logging.info(str(e))
@@ -154,10 +154,10 @@ class DataLoader:
         try:
             code = []
             for item in self.df_mort['salary_band'].tolist():
-                if type(item) ==str and item!='crypto':
+                if type(item) ==str and item!=config['ETL']['crypto']:
                     code.append(re.sub(r'[^a-zA-Z]', '', item))
                 else:
-                    code.append('GBP')
+                    code.append(config['ETL']['GBP'])
             self.df_mort['country_code'] = code
         except Exception as e:
             logging.info(str(e))
@@ -168,8 +168,8 @@ class DataLoader:
             self.df_total['age_bracket'] = self.df_total['age_bracket'].astype(str)
             self.df_total.drop(['full_name'],axis=1,inplace=True)
             self.df_adjusted = self.df_total.loc[self.df_total['created_account']!='N/A']
-            self.df_adjusted.loc[self.df_adjusted['country_code']!='GBP','salary_band']=np.nan
-            self.df_adjusted.loc[self.df_adjusted['salary_band']=='crypto','salary_band']=np.nan
+            self.df_adjusted.loc[self.df_adjusted['country_code']!=config['ETL']['GBP'],'salary_band']=np.nan
+            self.df_adjusted.loc[self.df_adjusted['salary_band']==config['ETL']['crypto'],'salary_band']=np.nan
             self.df_adjusted.drop(['country_code','dob'],axis=1,inplace=True)
             logging.info('Final datafrane adjusted')
             logging.info('%s %s', 'Length of final df :', len(self.df_adjusted))
@@ -293,8 +293,8 @@ def drop_outliers(df):
     try:
         df_mahal = df.copy()
         df_mahal['Mahalanobis_Dis']=mahalanobis(df.select_dtypes(['float']),df.select_dtypes(['float']))
-        df_mahal['p_value'] = 1-chi2.cdf(df_mahal['Mahalanobis_Dis'], df_mahal.shape[1]-3)
-        out_idx = df_mahal.loc[df_mahal['p_value']<0.001]['created_account'].index
+        df_mahal['p_value'] = 1-chi2.cdf(df_mahal['Mahalanobis_Dis'], df_mahal.shape[1]-int(config['ETL']['dof']))
+        out_idx = df_mahal.loc[df_mahal['p_value']<int(config['ETL']['p_value'])]['created_account'].index
         df_final = df.drop(index=out_idx)
         del df_mahal
         logging.info('Outliers dropped')
