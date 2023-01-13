@@ -4,6 +4,8 @@ Usage: main.py
 Contains all the steps for the end to end modelling pipeline written into clean, reusable modular code.
 All the functions are being kept within a few lines of code for easier debugging and apprehending.
 Contains classes and fucntions to be imported to main.py.
+
+All the changes are being done to this file for easy debugging - no need to interfere with main.py.
 """
 import pandas as pd
 import pickle
@@ -154,7 +156,7 @@ class DataLoader:
         try:
             code = []
             for item in self.df_mort['salary_band'].tolist():
-                if type(item) ==str and item!=config['ETL']['crypto']:
+                if type(item) ==str and item!=config['ETL']['crypto']s:
                     code.append(re.sub(r'[^a-zA-Z]', '', item))
                 else:
                     code.append(config['ETL']['GBP'])
